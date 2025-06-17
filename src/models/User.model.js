@@ -47,7 +47,6 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 userSchema.methods.generateAccessToken = function () {
     return jwt.sign(
         {
-            // this is the payload of the token
             _id: this._id,
             email: this.email,
             username: this.username,
@@ -62,7 +61,6 @@ userSchema.methods.generateAccessToken = function () {
 userSchema.methods.generateRefreshToken = function () {
     return jwt.sign(
         {
-            // this is the payload of the token
             _id: this._id,
         },
         process.env.REFRESH_TOKEN_SECRET,
