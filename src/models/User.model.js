@@ -44,6 +44,34 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password);
 };
 
+userSchema.methods.generateAccessToken = function () {
+    return jwt.sign(
+        {
+            // this is the payload of the token
+            _id: this._id,
+            email: this.email,
+            username: this.username,
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+            expiresIn: "1h",
+        }
+    )
+}
+
+userSchema.methods.generateRefreshToken = function () {
+    return jwt.sign(
+        {
+            // this is the payload of the token
+            _id: this._id,
+        },
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+            expiresIn: "7d",
+        }
+    )
+}
+
 const User = mongoose.model('User', userSchema);
 
 export default User;

@@ -5,11 +5,20 @@ import bcrypt from 'bcrypt';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 
-const generateToken = (userId) => {
-    return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-        expiresIn: '1h' // Token expires in 1 hour
-    });
-};
+const generateAccessAndRefreshTokens = async (userId) => {
+    try {
+        const user = await User.findById(userId);
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
+
+        user.refreshToken = refreshToken;
+        user.save({ validateBeforeSave: false });
+
+        return { accessToken, refreshToken };
+    } catch (error) {
+        throw new ApiError(500, " Something went wrong while generation refresh and access token");
+    }
+}
 
 export const registerUser = async (req, res) => {
     try {
@@ -59,8 +68,14 @@ export const loginUser = async (req, res) => {
         // Generate token
         const token = generateToken(user._id);
 
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+
         res
             .status(200)
+            .cookie('token', token, options)
             .json(
                 new ApiResponse(200, {}, "login succesfull")
             );
