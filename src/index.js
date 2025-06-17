@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import courseRoutes from './routes/course.route.js';
 import userRoutes from "./routes/user.route.js"
 import connectDB from './db/index.js';
-import { errorHandler } from './utils/errorHandle.js';
 dotenv.config(
     { path: './.env', }
 );
@@ -19,7 +18,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/courses', courseRoutes);
 app.use('/api/auth', userRoutes);
 
-app.use(errorHandler);
+app.get('/', (req, res) => {
+    res
+    .status(200)
+    .json({message: " the api version 1.0.0"}
+
+    );
+})
 
 // Database connection
 connectDB();
