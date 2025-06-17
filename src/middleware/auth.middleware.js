@@ -1,6 +1,6 @@
 // filepath: src/middleware/auth.js
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import User from '../models/User.model.js';
 
 export const authenticate = async (req, res, next) => {
     let token;

@@ -1,13 +1,10 @@
 // filepath: src/routes/authRoutes.js
 import express from 'express';
-import { registerUser, loginUser, getUsers } from '../controllers/user.controller.js';
-
+import { registerUser, loginUser, getCurrentUser } from '../controllers/user.controller.js';
+import { authenticate } from '../middleware/auth.middleware.js';
 const router = express.Router();
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
-router.get('/users', getUsers);
-router.get('/',(req, res)=> {
-    res.send('Version 1.0 of the API');
-})
+router.get('/users/me', authenticate, getCurrentUser);
 export default router;
