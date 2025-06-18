@@ -1,18 +1,16 @@
-# Use official Node.js LTS image
-FROM node:20
+# Step 1: Use Amazon Linux Node.js Lambda base image
 
-# Create app directory
-WORKDIR /usr/src/app
+FROM public.ecr.aws/lambda/nodejs:18
+WORKDIR /var/task
+# Step 2: Copy app files
 
-# Copy package files and install dependencies
-COPY package*.json ./
-RUN npm install
-
-# Copy the rest of the source code
 COPY . .
 
-# Expose port (match Express app's port, usually 3000)
-EXPOSE 5000
+# Step 3: Install dependencies
 
-# Start the application
-CMD ["npm", "start"]
+RUN npm install
+
+# Step 4: Set the Lambda function entrypoint
+
+CMD ["src/index.handler"]
+
