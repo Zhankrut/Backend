@@ -7,7 +7,7 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/lambda.js",
+    "start": "node src/index.js",
     "dev": " nodemon src/index.js"
   },
   "dependencies": {

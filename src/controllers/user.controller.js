@@ -39,7 +39,7 @@ export const registerUser = async (req, res) => {
 
         await newUser.save();
 
-        res
+        return res
             .status(201)
             .json(
                 new ApiResponse(200, newUser, "the has successfully registered ")
@@ -74,7 +74,7 @@ export const loginUser = async (req, res) => {
             secure: true
         }
 
-        res
+        return res
             .status(200)
             .cookie("accessToken", accessToken, options)
             .cookie("refreshToken", refreshToken, options)
@@ -97,8 +97,8 @@ export const getCurrentUser = async (req, res) => {
             throw new ApiError(400, "no current user found ");
         }
 
-        res.
-            status(200)
+        return res
+            .status(200)
             .json(
                 new ApiResponse(200, user, "current user fetched successfully")
             );

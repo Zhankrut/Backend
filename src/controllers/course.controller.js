@@ -12,7 +12,7 @@ export async function createCourse(req, res) {
         }
         const newCourse = new Course({ title, description, duration });
         await newCourse.save();
-        res
+        return res
             .status(200)
             .json(
                 new ApiResponse(200, newCourse, "the course have successfull created")
@@ -25,7 +25,7 @@ export async function createCourse(req, res) {
 export async function getCourses(req, res) {
     try {
         const courses = await Course.find();
-        res
+        return res
             .status(200)
             .json(
                 new ApiResponse(200, courses, "the list of courses")
@@ -42,7 +42,7 @@ export async function getCourseById(req, res) {
         if (!course) {
             throw new ApiError(400, "the course does not exist");
         }
-        res
+        return res
             .status(200)
             .json(
                 new ApiResponse(200, course, " ")
@@ -60,10 +60,10 @@ export async function updateCourse(req, res) {
         if (!updatedCourse) {
             throw new ApiError(400, " the course not found");
         }
-        res
+        return res
             .status(200)
             .json(
-                new ApiResponse(200, updateCourse, " the course updated successfully")
+                new ApiResponse(200, updatedCourse, " the course updated successfully")
             );
     } catch (error) {
         throw new ApiError(400, error.message);
@@ -75,12 +75,12 @@ export async function deleteCourse(req, res) {
         const { id } = req.params;
         const deletedCourse = await Course.findByIdAndDelete(id);
         if (!deletedCourse) {
-            throw new ApiError(400, "the course not found");
+            throw new ApiError(400, "the course not found"); v
         }
-        res
-            .status(204)
+        return res
+            .status(200)
             .json(
-                new ApiResponse(204, deletedCourse, " the course deleted successfully")
+                new ApiResponse(200, deletedCourse, " the course deleted successfully")
             );
     } catch (error) {
         throw new ApiError(400, error.message);
