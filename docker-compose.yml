@@ -6,14 +6,18 @@ services:
     container_name: backend_app
     ports:
       - "5000:5000" # host:container
+    env_file:
+      - .env
     environment:
       - NODE_ENV=${NODE_ENV}
       - PORT=${PORT}
       - MONGO_URI=${MONGO_URI}
       - JWT_SECRET=${JWT_SECRET}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules
+      #- /usr/src/app/node_modules
     depends_on:
       - mongo
 

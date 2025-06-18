@@ -7,13 +7,13 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 
 const generateAccessAndRefreshTokens = async (userId) => {
     try {
+
         const user = await User.findById(userId);
         const accessToken = user.generateAccessToken();
         const refreshToken = user.generateRefreshToken();
 
         user.refreshToken = refreshToken;
         user.save({ validateBeforeSave: false });
-
         return { accessToken, refreshToken };
     } catch (error) {
         throw new ApiError(500, " Something went wrong while generation refresh and access token");
@@ -33,7 +33,8 @@ export const registerUser = async (req, res) => {
         const newUser = new User({
             username,
             email,
-            password
+            password,
+            refreshToken: null
         });
 
         await newUser.save();
@@ -66,7 +67,7 @@ export const loginUser = async (req, res) => {
         }
 
         // Generate token
-        const token = generateToken(user._id);
+        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
 
         const options = {
             httpOnly: true,
@@ -75,9 +76,12 @@ export const loginUser = async (req, res) => {
 
         res
             .status(200)
-            .cookie('token', token, options)
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options)
             .json(
-                new ApiResponse(200, {}, "login succesfull")
+                new ApiResponse(200, {
+                    user: user, accessToken, refreshToken
+                }, "login succesfull")
             );
     } catch (error) {
         console.error('Error logging in:', error);
@@ -88,21 +92,15 @@ export const loginUser = async (req, res) => {
 export const getCurrentUser = async (req, res) => {
     try {
         // req.user should be set by authentication middleware
-        const userId = req.user?.id;
-        if (!userId) {
-            throw new ApiError(440, " the userId not found")
-
+        const user = req.user || null;
+        if (user === null) {
+            throw new ApiError(400, "no current user found ");
         }
 
-        const user = await User.findById(userId).select('-password');
-        if (!user) {
-            throw new ApiError(400, "the user not found");
-        }
-
-        res
-            .status(200)
+        res.
+            status(200)
             .json(
-                new ApiResponse(200, user, "current user")
+                new ApiResponse(200, user, "current user fetched successfully")
             );
     } catch (error) {
         console.error('Error fetching current user:', error);

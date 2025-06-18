@@ -1,6 +1,8 @@
 // filepath: src/models/User.js
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -23,6 +25,9 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 6
     },
+    refreshToken: {
+        type: String,
+    }
 }, {
     timestamps: true
 });
