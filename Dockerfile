@@ -12,5 +12,5 @@ RUN npm install
 
 # Step 4: Set the Lambda function entrypoint
 
-CMD ["src/index.handler"]
+CMD ["src/lambda.funcName"]
 
