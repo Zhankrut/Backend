@@ -11,7 +11,8 @@
     "dev": " nodemon src/index.js"
   },
   "dependencies": {
-    "@codegenie/serverless-express": "^4.16.0",
+    "@aws-sdk/client-ses": "^3.835.0",
+    "aws-sdk": "^2.1692.0",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.5.0",
