@@ -1,10 +1,15 @@
 import { CreateTemplateCommand, SESClient } from '@aws-sdk/client-ses';
+import dotenv from 'dotenv';
+
+dotenv.config(
+    { path: './.env', }
+);
 
 const config = {
     region: "us-east-1",
     credentials: {
-        accessKeyId: "AKIARCYOGPT4AMAOV7VE",
-        secretAccessKey: "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",
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_KEY_ID,
     }
 }
 
@@ -20,11 +25,11 @@ const createEmailTemplate = async () => {
         }
     }
 
-    try{
+    try {
         const command = new CreateTemplateCommand(params);
         const data = await ses.send(command);
         console.log("template created", data);
-    }catch(err){
+    } catch (err) {
         console.log('error creating template:', err);
     }
 }

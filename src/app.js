@@ -3,8 +3,10 @@ import userRoutes from "./routes/user.route.js"
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import { SESClient, SendBulkTemplatedEmailCommand } from '@aws-sdk/client-ses';
-
-
+import dotenv from 'dotenv';
+dotenv.config(
+    { path: './.env', }
+);
 const app = express();
 
 app.use(cookieParser());
@@ -32,8 +34,8 @@ app.post("/sendEmail", async (req, res) => {
     const config = {
         region: "us-east-1",
         credentials: {
-            accessKeyId: "AKIARCYOGPT4AMAOV7VE",
-            secretAccessKey: "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",
+            accessKeyId:  process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_KEY_ID,
         }
     }
 
