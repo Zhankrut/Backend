@@ -1,15 +1,16 @@
-import AWS from 'aws-sdk';
+import { CreateTemplateCommand, SESClient } from '@aws-sdk/client-ses';
 
-AWS.config.update({
-    accessKeyId: "AKIARCYOGPT4HBLO4RPE",
-    secretAccessKey: "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",
-    region: "us-east-1"
-});
+const config = {
+    region: "us-east-1",
+    credentials: {
+        accessKeyId: "AKIARCYOGPT4AMAOV7VE",
+        secretAccessKey: "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",
+    }
+}
 
+const ses = new SESClient(config);
 
-const ses = AWS.SES({ apiVersion: "2010-12-01" });
-
-const createEmailTemplate = () => {
+const createEmailTemplate = async () => {
     const params = {
         Template: {
             TemplateName: "WelcomeTemplate",
@@ -19,12 +20,13 @@ const createEmailTemplate = () => {
         }
     }
 
-    const response = ses.sendTemplatedEmail(params, (err, data) => {
-        if (err) {
-            console.log(err, err.stack);
-        }
-        else {
-            console.log(data);
-        }
-    });
+    try{
+        const command = new CreateTemplateCommand(params);
+        const data = await ses.send(command);
+        console.log("template created", data);
+    }catch(err){
+        console.log('error creating template:', err);
+    }
 }
+
+createEmailTemplate();

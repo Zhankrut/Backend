@@ -2,7 +2,7 @@ import courseRoutes from './routes/course.route.js';
 import userRoutes from "./routes/user.route.js"
 import cookieParser from 'cookie-parser';
 import express from 'express';
-import { SESClient, CreateTemplateCommand } from "@aws-sdk/client-ses";
+import { SESClient, SendBulkTemplatedEmailCommand } from '@aws-sdk/client-ses';
 
 
 const app = express();
@@ -23,7 +23,33 @@ app.get('/', (req, res) => {
 })
 
 app.post("/sendEmail", async (req, res) => {
-    const users = req.body; 
+    /*
+    [
+        { "email": "alice@example.com", "name": "Alice" },
+        { "email": "bob@example.com", "name": "Bob" }
+    ]
+    */
+    const config = {
+        region: "us-east-1",
+        credentials: {
+            accessKeyId: "AKIARCYOGPT4AMAOV7VE",
+            secretAccessKey: "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",
+        }
+    }
+
+    const ses = new SESClient(config);
+
+    let users = req.body;
+
+    if (typeof users === "string") {
+        try {
+            users = JSON.parse(users);
+        } catch (e) {
+            return res.status(400).json({ message: "Invalid JSON body" });
+        }
+    }
+
+    console.log(!Array.isArray(users));
 
     if (!Array.isArray(users) || users.length === 0) {
         return res.status(400).json({ message: "No recipients provided" });
